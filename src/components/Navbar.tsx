@@ -13,8 +13,8 @@ const navLinks: NavLink[] = [
     path: "/build",
   },
   {
-    name: "join",
-    path: "/join",
+    name: "gather",
+    path: "/gather",
   },
 ];
 
