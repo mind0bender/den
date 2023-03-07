@@ -26,11 +26,11 @@ const Input: FC<InputProps> = ({
         aria-labelledby={`${label}-label-${id}`}
         placeholder={placeholder}
         type="text"
-        className={`bg-indigo-50 outline-none border-none peer/${label} focus:placeholder:text-transparent rounded-md px-2 py-1`}
+        className={`bg-indigo-50 outline-none border-none peer/inp focus:placeholder:text-transparent rounded-md px-2 py-1`}
       />
       <div
         id={`${label}-label-${id}`}
-        className={`text-xs absolute font-bold px-4 rounded-md top-0 w-full text-transparent peer-focus/${label}:text-indigo-500 duration-200`}>
+        className={`text-xs absolute font-bold px-4 rounded-md top-0 w-full text-transparent peer-focus/inp:text-indigo-500 duration-200`}>
         {placeholder}
       </div>
     </label>

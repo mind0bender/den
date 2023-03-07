@@ -45,7 +45,7 @@ const Navbar: FC = (): JSX.Element => {
 
   return (
     <div
-      className={`w-full sticky top-0 left-0 bg-indigo-400 ${
+      className={`text-white w-full overflow-hidden sticky top-0 left-0 bg-indigo-500 ${
         myScrollY ? "bg-opacity-75" : ""
       } duration-300`}>
       <nav
@@ -85,7 +85,7 @@ const Navbar: FC = (): JSX.Element => {
           style={{
             width: `${scrollPercent}%`,
           }}
-          className={`h-1 bg-indigo-500 flex justify-end duration-300`}>
+          className={`h-1 flex justify-end duration-300`}>
           <div
             className={`h-full w-10 bg-gradient-to-r from-indigo-500 via-indigo-300 to-indigo-500`}
           />
