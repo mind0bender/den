@@ -3,11 +3,8 @@ import { useParams } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import Lion from "../components/Lion";
 import { SocketContext } from "../contexts/socketContext";
-import MuteMicrophone from "../assets/mute-microphone.png";
-import Microphone from "../assets/microphone.png";
 import { getDisplayMedia, getUserMedia } from "../webRTC/getMedia";
 import Button from "../components/Button";
-import Input from "../components/Input";
 import Peer from "../webRTC";
 
 const Den: FC = (): JSX.Element => {
@@ -18,26 +15,34 @@ const Den: FC = (): JSX.Element => {
   const peer: React.MutableRefObject<Peer | null> = useRef<Peer | null>(null);
 
   const [localUserStream, setLocalUserStream] = useState<MediaStream | null>();
-  const [remoteUserStream, setRemoteUserStream] = useState<MediaStream>(
-    new MediaStream()
+  const [remoteUserStream, setRemoteUserStream] = useState<MediaStream | null>(
+    null
   );
+
+  const [name, setName] = useState<string>("unknown");
 
   useEffect((): (() => void) => {
     if (socket && !peer.current) {
+      socket.on("connect", () => {
+        setName(socket.id);
+        console.log(socket.id);
+      });
       socket.emit("gather", denId);
-      socket.on("gathered", (lionId: string): void => {
-        console.log(`${lionId} gathered in ${denId}`);
+      socket.on("members", (lionIds: string[]): void => {
+        console.log(`${lionIds.length} members in ${denId}`);
       });
 
       peer.current = new Peer(socket, (track: MediaStreamTrack): void => {
-        remoteUserStream?.addTrack(track);
+        setRemoteUserStream((pms: MediaStream | null): MediaStream => {
+          if (!pms) {
+            return new MediaStream([track]);
+          } else {
+            pms.addTrack(track);
+            return pms;
+          }
+        });
       });
       peer.current.init();
-      getDisplayMedia().then((stream: MediaStream): void => {
-        console.log("adding stream");
-        setLocalUserStream(stream);
-        peer.current?.addStream(stream);
-      });
     }
     return (): void => {};
   }, [socket]);
@@ -50,17 +55,35 @@ const Den: FC = (): JSX.Element => {
           <div className={`text-2xl font-bold underline decoration-wavy`}>
             DEN: {denId?.toLowerCase()}
           </div>
-          <Lion srcObject={remoteUserStream} king name={`king's stream`} />
-          <Button
-            onClick={(): void => {
-              peer.current?.createOffer();
-            }}>
-            Connect
-          </Button>
+          <Lion srcObject={remoteUserStream} king name={`${name}'s stream`} />
+          <div className={`flex gap-4 justify-center items-center`}>
+            <Button
+              onClick={(): void => {
+                getUserMedia().then((stream: MediaStream): void => {
+                  console.log("adding stream");
+                  setLocalUserStream(stream);
+                  peer.current?.addStream(stream);
+                  peer.current?.createOffer();
+                });
+              }}>
+              Share Stream
+            </Button>
+            <Button
+              onClick={(): void => {
+                getDisplayMedia().then((stream: MediaStream): void => {
+                  console.log("adding stream");
+                  setLocalUserStream(stream);
+                  peer.current?.addStream(stream);
+                  peer.current?.createOffer();
+                });
+              }}>
+              Share Screen
+            </Button>
+          </div>
         </div>
         <div
           className={`flex landscape:max-h-[40rem] portrait:max-h-[20rem] justify-around overflow-auto py-4 rounded-md bg-indigo-200 items-center flex-wrap landscape:w-2/5 portrait:w-full h-full gap-2 snap-y`}>
-          <Lion srcObject={localUserStream} name={`remote stream`} />
+          <Lion srcObject={localUserStream} name={`your stream`} />
         </div>
       </div>
     </div>

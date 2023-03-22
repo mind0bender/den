@@ -3,6 +3,7 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import VRChat from "../assets/vr_chat.svg";
 import Layout from "../components/Layout";
+import { Form } from "react-router-dom";
 
 const BuildDen: FC = (): JSX.Element => {
   const [denID, setDenID] = useState<string>("");
@@ -21,9 +22,12 @@ const BuildDen: FC = (): JSX.Element => {
               </div>
             </div>
           </div>
-          <div
+          <Form
+            method={`post`}
+            action={`/build/new`}
             className={`flex w-fit flex-col gap-4 bg-indigo-400 rounded-md px-6 py-4`}>
             <Input
+              name={"denId"}
               value={denID}
               onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                 console.log(e.target.value);
@@ -33,9 +37,9 @@ const BuildDen: FC = (): JSX.Element => {
               label={`den-id`}
             />
             <div className={`flex justify-end`}>
-              <Button>Build</Button>
+              <Button type="submit">Build</Button>
             </div>
-          </div>
+          </Form>
         </div>
         <div className={`max-w-lg w-full flex flex-col gap-4`}>
           <div

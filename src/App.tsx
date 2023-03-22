@@ -1,10 +1,30 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+  Routes,
+} from "react-router-dom";
 import BuildDen from "./pages/BuildDen";
 import Home from "./pages/Home";
 import Gather from "./pages/Gather";
 import { useEffect } from "react";
 import { GROUP_CHART_DATA_IMG } from "./constants";
 import Den from "./pages/Den";
+import { action as newDen } from "./routes/new";
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route path={`/`} element={<Home />} />
+      <Route path={`/build`} element={<BuildDen />} />
+      <Route path={`/build/new`} action={newDen} />
+      <Route path={`/gather`} element={<Gather />} />
+      <Route path={`/den/:denId`} element={<Den />} />
+    </Route>
+  )
+);
 
 function App(): JSX.Element {
   useEffect((): (() => void) => {
@@ -16,18 +36,7 @@ function App(): JSX.Element {
     return (): void => {};
   }, []);
 
-  return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route path={`/`} element={<Home />} />
-          <Route path={`/build`} element={<BuildDen />} />
-          <Route path={`/gather`} element={<Gather />} />
-          <Route path={`/den/:denId`} element={<Den />} />
-        </Routes>
-      </BrowserRouter>
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
