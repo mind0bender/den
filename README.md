@@ -1,6 +1,6 @@
 # Den - A collaborative platform
 
-Den is a webapp built for realtime seamless collaboration.
+Den is a web-app built for real-time seamless collaboration.
 Connect to den-servers and join video/audio calls and Jam boards.
 
 Help build stuff.
