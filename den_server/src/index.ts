@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 import express, { Express, Request, Response } from "express";
 import { createServer, Server as HTTPServer } from "http";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import cors from "cors";
 
 config();
@@ -26,10 +26,12 @@ app.get("/", (req: Request, res: Response): void => {
   res.send("Hello World!");
 });
 
-io.on("connection", (socket) => {
+io.on("connection", (socket: Socket): void => {
   console.log(`+ Client connected:\t${socket.id}`);
-  socket.emit("message", "Hello from server");
-  socket.on("disconnect", () => {
+  socket.on("message", (msg: string): void => {
+    socket.broadcast.emit("message", msg);
+  });
+  socket.on("disconnect", (): void => {
     console.log(`- Client disconnected:\t${socket.id}`);
   });
 });
